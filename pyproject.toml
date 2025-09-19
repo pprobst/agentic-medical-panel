@@ -1,0 +1,16 @@
+[project]
+name = "pydantic-ai-exp"
+version = "0.1.0"
+description = "A medical panel that proposes diagnosis or tests"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [
+    {name = "Pedro Probst", email = "pprobst@insiberia.net"}
+]
+dependencies = [
+    "jinja2>=3.1.6",
+    "pydantic-ai>=1.0.5",
+    "pydantic-ai-slim[duckduckgo]>=1.0.5",
+    "pydantic-ai-slim[logfire]>=1.0.5",
+    "python-dotenv>=1.1.1",
+]
