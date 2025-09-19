@@ -1,6 +1,6 @@
-# Ageintic Medical Diagnosis Simulation
+# Agentic Medical Diagnosis Panel
 
-This project implements a multi-agent system using [`pydantic-ai`][https://ai.pydantic.dev/] to simulate a medical diagnostic process. It is heavily inspired by the concepts outlined in Microsoft's research on AI-driven diagnostics: [The Path to Medical Superintelligence](https://microsoft.ai/new/the-path-to-medical-superintelligence/).
+This project implements a multi-agent system using [`pydantic-ai`](https://ai.pydantic.dev/) to simulate a medical diagnostic process. It is heavily inspired by the concepts outlined in Microsoft's research on AI-driven diagnostics: [The Path to Medical Superintelligence](https://microsoft.ai/new/the-path-to-medical-superintelligence/).
 
 It features an orchestrator agent that coordinates a panel of specialized AI agents to:
 1.  Generate initial differential diagnoses for a patient case.
@@ -38,13 +38,12 @@ uv run main.py --patient-info "A 65-year-old male presents with a 3-day history 
 The script will output a detailed log of the diagnostic process, including the consensus on the next best action.
 
 ```
-2025-07-21 23:50:24,560 - agentic_diagnosis - INFO - --- Orchestrator Conclusion ---
-2025-07-21 23:50:24,560 - agentic_diagnosis - INFO - {
+2025-09-19 20:52:32,679 - agentic_diagnosis - INFO - {
   "action": {
     "test_name": "Chest X-ray",
-    "reasoning": "Chest X-ray is the most critical next step as it can confirm or rule out community-acquired pneumonia by identifying typical infiltrates or consolidation. This will help to decisively differentiate between the leading hypothesis of pneumonia and other possibilities like acute bronchitis or COVID-19, which have different radiographic features."
+    "reasoning": "Chest X-ray is the most important next test because it can definitively confirm or exclude pneumonia by showing characteristic lung infiltrates or consolidations. This will help discriminate the leading diagnosis of pneumonia from acute bronchitis or COPD exacerbation, which cannot be reliably distinguished based on clinical presentation alone. It is a cost-effective, widely recommended, and rapid diagnostic tool making it the optimal choice for this patient."
   },
-  "consensus_summary": "The leading diagnosis is community-acquired pneumonia based on the symptoms and patient age, but certainty is below 95%. The panel advises against sputum culture due to low yield and approves chest X-ray and COVID-19 PCR for diagnostic clarification. The debate panel highlighted possible anchoring bias on pneumonia diagnosis and recommended chest X-ray as a decisive test to confirm or refute pneumonia. COVID-19 PCR test is also approved for exclusion given symptom overlap and public health importance. The consensus is that chest X-ray is the critical next diagnostic action to guide management."
+  "consensus_summary": "The panel concurs that while pneumonia is the most likely diagnosis, the clinical overlap with acute bronchitis and COPD exacerbation warrants further diagnostic clarification. The chest X-ray was unanimously agreed upon as the priority test due to its high utility in confirming pneumonia presence or absence, which would guide further management decisions. This approach mitigates the risk of anchoring bias and ensures cost-effective, evidence-based patient care."
 }
 ```
 
