@@ -20,7 +20,7 @@ It features an orchestrator agent that coordinates a panel of specialized AI age
 
 ```bash
 git clone https://github.com/pprobst/agentic-medical-panel.git
-cd ai-playground/pydantic-ai-exp
+cd agentic-medical-panel
 uv sync
 source .venv/bin/activate
 ```
