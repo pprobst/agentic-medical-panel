@@ -1,25 +1,24 @@
 """Template management utilities."""
 
 from pathlib import Path
-from typing import Union
 from jinja2 import Environment, FileSystemLoader
 
 
 class TemplateManager:
     """Handles loading and rendering of Jinja2 templates."""
 
-    def __init__(self, template_folder: Union[str, Path]):
+    def __init__(self, template_folder: str | Path) -> None:
         """
         Initializes the Jinja2 environment.
 
         Args:
             template_folder: The path to the directory containing template files.
         """
-        self.jinja_env = Environment(
+        self.jinja_env: Environment = Environment(
             loader=FileSystemLoader(template_folder), autoescape=True
         )
 
-    def render(self, template_name: str, **context) -> str:
+    def render(self, template_name: str, **context: object) -> str:
         """
         Renders a template with the given context.
 

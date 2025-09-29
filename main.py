@@ -5,36 +5,35 @@ import argparse
 import time
 
 import asyncio
-from typing import List, Union, Optional
 
 import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.openai import OpenAIChatModel, OpenAIChatModelSettings
-from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
+from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool  # pyright: ignore[reportUnknownVariableType]
 from dotenv import load_dotenv
 
 from utils.log import log
 from utils.template_manager import TemplateManager
 
-load_dotenv()
+_ = load_dotenv()
 
 # --------------------------------------------------------------------------
 # 1. Configuration and Dependencies
 # --------------------------------------------------------------------------
 
 if os.getenv("LOGFIRE_TOKEN"):
-    logfire.configure(token=os.getenv("LOGFIRE_TOKEN"))
-    logfire.instrument_pydantic_ai()
+    _ = logfire.configure(token=os.getenv("LOGFIRE_TOKEN"))
+    _ = logfire.instrument_pydantic_ai()
 
 
 class Config:
     """Application configuration."""
 
     def __init__(self, model: str) -> None:
-        self.openai_api_key: Optional[str] = os.getenv("OPENAI_API_KEY")
-        self.model = OpenAIChatModel(model)
-        self.model_settings = (
+        self.openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
+        self.model: OpenAIChatModel = OpenAIChatModel(model)
+        self.model_settings: OpenAIChatModelSettings | None = (
             OpenAIChatModelSettings(
                 openai_reasoning_effort="low",
             )
@@ -109,16 +108,16 @@ class DebateResults(BaseModel):
     challenger_critique: ChallengerCritique = Field(
         ..., description="The critique from the challenger."
     )
-    stewardship_advice: List[StewardshipAdvice] = Field(
+    stewardship_advice: list[StewardshipAdvice] = Field(
         ..., description="The advice from the stewardship panel."
     )
-    quality_checks: List[QualityCheck] = Field(
+    quality_checks: list[QualityCheck] = Field(
         ..., description="The quality checks from the checklist panel."
     )
 
 
 class FinalDecision(BaseModel):
-    action: Union[Diagnosis, TestRequest] = Field(
+    action: Diagnosis | TestRequest = Field(
         ..., description="The final chosen action after consensus."
     )
     consensus_summary: str = Field(
@@ -152,7 +151,7 @@ Follow this exact process:
 @orchestrator_agent.tool
 async def hypothesize(
     context: RunContext[Dependencies], patient_info: str
-) -> List[Diagnosis]:
+) -> list[Diagnosis]:
     """Generates a ranked list of the top 3 potential diagnoses."""
     deps = context.deps
 
@@ -162,7 +161,7 @@ async def hypothesize(
         )
         log.info("Tool: Running Dr. Hypothesis...")
         hypothesis_agent = Agent(
-            output_type=List[Diagnosis],
+            output_type=list[Diagnosis],
             model=deps.config.model,
             model_settings=deps.config.model_settings,
             tools=[duckduckgo_search_tool()],
@@ -179,8 +178,8 @@ async def hypothesize(
 
 @orchestrator_agent.tool
 async def request_tests(
-    context: RunContext[Dependencies], patient_info: str, hypotheses: List[Diagnosis]
-) -> List[TestRequest]:
+    context: RunContext[Dependencies], patient_info: str, hypotheses: list[Diagnosis]
+) -> list[TestRequest]:
     """Proposes up to 3 diagnostic tests to differentiate between the top hypotheses."""
     deps = context.deps
 
@@ -190,7 +189,7 @@ async def request_tests(
         )
         log.info("Tool: Running Dr. Test Chooser...")
         test_chooser_agent = Agent(
-            output_type=List[TestRequest],
+            output_type=list[TestRequest],
             model=deps.config.model,
             model_settings=deps.config.model_settings,
         )
@@ -205,8 +204,8 @@ async def request_tests(
 @orchestrator_agent.tool
 async def debate(
     context: RunContext[Dependencies],
-    hypotheses: List[Diagnosis],
-    test_requests: List[TestRequest],
+    hypotheses: list[Diagnosis],
+    test_requests: list[TestRequest],
 ) -> DebateResults:
     """Runs the deliberation panel to critique the current plan."""
     deps = context.deps
@@ -235,7 +234,7 @@ async def debate(
                 "dr_stewardship.jinja2", test_requests=test_requests
             )
             stewardship_agent = Agent(
-                output_type=List[StewardshipAdvice],
+                output_type=list[StewardshipAdvice],
                 model=deps.config.model,
                 model_settings=deps.config.model_settings,
                 tools=[duckduckgo_search_tool()],
@@ -253,7 +252,7 @@ async def debate(
                 test_requests=test_requests,
             )
             checklist_agent = Agent(
-                output_type=List[QualityCheck],
+                output_type=list[QualityCheck],
                 model=deps.config.model,
                 model_settings=deps.config.model_settings,
             )
@@ -298,10 +297,10 @@ async def debate(
 async def reach_consensus(
     context: RunContext[Dependencies],
     patient_info: str,
-    hypotheses: List[Diagnosis],
-    test_requests: List[TestRequest],
+    hypotheses: list[Diagnosis],
+    test_requests: list[TestRequest],
     debate_results: DebateResults,
-) -> Union[Diagnosis, TestRequest]:
+) -> Diagnosis | TestRequest:
     """Synthesizes all information using the decision-maker prompt to select the single best action."""
     deps = context.deps
     log.info("Tool: Running Consensus Panel to make final decision...")
@@ -317,7 +316,7 @@ async def reach_consensus(
             quality_checks=debate_results.quality_checks,
         )
         consensus_agent = Agent(
-            output_type=Union[Diagnosis, TestRequest],
+            output_type=Diagnosis | TestRequest,
             model=deps.config.model,
             model_settings=deps.config.model_settings,
         )
@@ -334,25 +333,33 @@ async def reach_consensus(
 # --------------------------------------------------------------------------
 
 
-async def main():
+class Args(argparse.Namespace):
+    patient_info: str = ""
+    model: str = ""
+
+
+async def main() -> None:
     """Runs a single pass of the diagnostic orchestrator."""
     parser = argparse.ArgumentParser(description="Run the diagnostic orchestrator.")
-    parser.add_argument(
+    _ = parser.add_argument(
         "--patient-info",
         type=str,
         default="A 65-year-old male presents with a 3-day history of high fever, a productive cough, and shortness of breath.",
         help="The patient case information.",
     )
-    parser.add_argument(
+    _ = parser.add_argument(
         "--model",
         type=str,
         default="gpt-4.1-mini",
         help="The model to use for each agent. Default is gpt-4.1-mini.",
     )
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=Args())
+
+    patient_case_info = args.patient_info
+    model_name = args.model
 
     # Initialize configuration and dependencies
-    config = Config(model=args.model)
+    config = Config(model=model_name)
     try:
         deps = Dependencies(config)
     except Exception as e:
@@ -361,8 +368,6 @@ async def main():
             "Please ensure you have a 'templates' directory at the project root with the required .jinja2 files."
         )
         return
-
-    patient_case_info = args.patient_info
 
     log.info("--- Starting Diagnostic Process ---")
     log.info(f"Patient Info: {patient_case_info}")
