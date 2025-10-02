@@ -333,11 +333,6 @@ async def reach_consensus(
 # --------------------------------------------------------------------------
 
 
-class Args(argparse.Namespace):
-    patient_info: str = ""
-    model: str = ""
-
-
 async def main() -> None:
     """Runs a single pass of the diagnostic orchestrator."""
     parser = argparse.ArgumentParser(description="Run the diagnostic orchestrator.")
@@ -353,7 +348,7 @@ async def main() -> None:
         default="gpt-4.1-mini",
         help="The model to use for each agent. Default is gpt-4.1-mini.",
     )
-    args = parser.parse_args(namespace=Args())
+    args = parser.parse_args()
 
     patient_case_info = args.patient_info
     model_name = args.model
