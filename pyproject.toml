@@ -10,7 +10,6 @@ authors = [
 dependencies = [
     "jinja2>=3.1.6",
     "pydantic-ai>=1.0.5",
-    "pydantic-ai-slim[duckduckgo]>=1.0.5",
-    "pydantic-ai-slim[logfire]>=1.0.5",
+    "pydantic-ai-slim[duckduckgo,logfire]>=1.0.5",
     "python-dotenv>=1.1.1",
 ]
