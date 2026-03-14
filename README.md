@@ -8,6 +8,56 @@ It features an orchestrator agent that coordinates a panel of specialized AI age
 3.  Debate the proposed plan from multiple perspectives (identifying cognitive bias, checking for cost stewardship, and ensuring quality).
 4.  Reach a final consensus on the most likely diagnosis or the next best test to perform.
 
+## How It Works
+
+```
+                         Patient Case
+                              |
+                              v
+                    +-------------------+
+                    |   Orchestrator    |
+                    |      Agent        |
+                    +-------------------+
+                              |
+                  1. Hypothesize
+                              |
+                              v
+                    +-------------------+
+                    |  Dr. Hypothesis   |-----> Top 3 Diagnoses
+                    +-------------------+       (with probabilities)
+                              |
+                  2. Certainty >= 95%? --YES--> Final Decision
+                              |
+                             NO
+                              |
+                  3. Propose Tests
+                              |
+                              v
+                    +-------------------+
+                    | Dr. Test Chooser  |-----> Up to 3 Tests
+                    +-------------------+
+                              |
+                  4. Debate (parallel)
+                              |
+              +---------------+---------------+
+              |               |               |
+              v               v               v
+     +--------------+ +--------------+ +--------------+
+     |   Dr.        | |   Dr.        | |   Dr.        |
+     |  Challenger  | | Stewardship  | |  Checklist   |
+     | (bias check) | | (cost check) | | (QA check)   |
+     +--------------+ +--------------+ +--------------+
+              |               |               |
+              +---------------+---------------+
+                              |
+                  5. Synthesize
+                              |
+                              v
+                    +-------------------+
+                    | Dr. Decision Maker|-----> Final Decision
+                    +-------------------+       (Diagnosis or Test)
+```
+
 ## Setup
 
 ### Prerequisites
