@@ -14,7 +14,7 @@ It features an orchestrator agent that coordinates a panel of specialized AI age
 
 - Python 3.12 or higher
 - uv (recommended)
-- An OpenAI API key
+- An OpenAI API key or Google API key (depending on model choice)
 
 ### Installation
 
@@ -50,7 +50,7 @@ The script will output a detailed log of the diagnostic process, including the c
 ## Project Structure
 
 ```
-pydantic-ai-exp/
+agentic-medical-panel/
 ├── README.md
 ├── main.py
 ├── pyproject.toml
